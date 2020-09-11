@@ -1,1 +1,1 @@
-# pyspark-standalone-cluster-with-hadoop-on-docker
+# pyspark-cluster-with-hadoop-on-docker
