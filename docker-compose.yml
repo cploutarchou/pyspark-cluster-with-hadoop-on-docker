@@ -5,7 +5,7 @@ volumes:
     driver: local
 services:
   jupyterlab:
-    build: ./build/docker/jupyterlab/
+    build: /build/docker/jupyterlab/Dockerfile
     ports:
       - "8888:8888"
     volumes:
