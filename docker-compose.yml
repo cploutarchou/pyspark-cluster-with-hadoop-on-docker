@@ -1,7 +1,7 @@
 version: "3.7"
 volumes:
   shared-workspace:
-    name: "Hadoop Distributed File System"
+    name: "Hadoop_Distributed_File_System"
     driver: local
 services:
   jupyterlab:
