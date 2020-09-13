@@ -1,4 +1,4 @@
-FROM cploutarchou/hadoop-base
+FROM cploutarchou/hadoop-base:hadoop-base
 
 MAINTAINER Christos Ploutarchou <cploutarchou@gmail.com>
 
