@@ -43,7 +43,7 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
   nodemanager1:
-    image: cploutarchou/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    image: cploutarchou/hadoop-base:hadoop-nodemanager
     container_name: nodemanager
     restart: always
     environment:
