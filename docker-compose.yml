@@ -12,7 +12,7 @@ services:
       - ./data:/opt/app/data
     entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --notebook-dir=/opt/app/data --allow-root'
   namenode:
-    image: cploutarchou/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    image: cploutarchou/hadoop-base:namenode
     container_name: namenode
     restart: always
     ports:
@@ -23,48 +23,44 @@ services:
     environment:
       - CLUSTER_NAME=test
     env_file:
-      - ./hadoop.env
+      - ./conf/hadoop/hadoop.env
+  datanode:
+    image: cploutarchou/hadoop-base:datanode
+    container_name: datanode
+    restart: always
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./conf/hadoop/hadoop.env
+  resourcemanager:
+    image: cploutarchou/hadoop-base:hadoop-nodemanager
+    container_name: resourcemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
+    env_file:
+      - ./conf/hadoop/hadoop.env
+  nodemanager1:
+    image: cploutarchou/hadoop-base:hadoop-nodemanager
+    container_name: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    env_file:
+      - ./conf/hadoop/hadoop.e
 
-    datanode:
-      image: cploutarchou/hadoop-datanode:2.0.0-hadoop3.2.1-java8
-      container_name: datanode
-      restart: always
-      volumes:
-        - hadoop_datanode:/hadoop/dfs/data
-      environment:
-        SERVICE_PRECONDITION: "namenode:9870"
-      env_file:
-        - ./hadoop.env
-
-    resourcemanager:
-      image: cploutarchou/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
-      container_name: resourcemanager
-      restart: always
-      environment:
-        SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
-      env_file:
-        - ./hadoop.env
-
-    nodemanager1:
-      image: cploutarchou/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
-      container_name: nodemanager
-      restart: always
-      environment:
-        SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
-      env_file:
-        - ./hadoop.env
-
-    historyserver:
-      image: cploutarchou/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
-      container_name: historyserver
-      restart: always
-      environment:
-        SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
-      volumes:
-        - hadoop_historyserver:/hadoop/yarn/timeline
-      env_file:
-        - ./hadoop.env
-
+  historyserver:
+    image: cploutarchou/hadoop-base:history-server
+    container_name: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./conf/hadoop/hadoop.env
   volumes:
     hadoop_namenode:
     hadoop_datanode:
