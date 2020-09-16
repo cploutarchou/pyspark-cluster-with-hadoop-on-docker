@@ -1,6 +1,6 @@
-FROM debian:9
+FROM debian:10
 
-MAINTAINER Christos Ploutarchou<cploutarchou@gmail.com>
+LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       openjdk-8-jdk \
@@ -39,7 +39,7 @@ ENV MULTIHOMED_NETWORK=1
 ENV USER=root
 ENV PATH $HADOOP_HOME/bin/:$PATH
 
-ADD /build/docker/hadoop/base/entrypoint.sh /entrypoint.sh
+ADD entrypoint.sh /entrypoint.sh
 
 RUN chmod a+x /entrypoint.sh
 
