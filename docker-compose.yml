@@ -4,17 +4,9 @@ volumes:
     name: "Hadoop_Distributed_File_System"
     driver: local
 services:
-
-  nginx:
-    image: cploutarchou/hadoop-base:nginx
-    container_name: nginx
-    networks:
-      - default
-    ports:
-      - 80:80
-      - 443:443
   jupyterlab:
     build: ./build/docker/jupyterlab/
+    container_name: jupyterlab
     ports:
       - "8888:8888"
     volumes:
@@ -25,7 +17,8 @@ services:
     image: cploutarchou/hadoop-base:namenode
     container_name: namenode
     networks:
-      - default
+      default:
+        ipv4_address: 172.28.1.1
     restart: always
     ports:
       - 9870:9870
@@ -41,12 +34,41 @@ services:
     image: cploutarchou/hadoop-base:datanode
     container_name: datanode
     networks:
-      - default
+      default:
+        ipv4_address: 172.28.1.2
     restart: always
     volumes:
       - ./hadoop_datanode:/hadoop/dfs/data
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./conf/hadoop/hadoop.env
+
+
+
+  nodemanager:
+    image: cploutarchou/hadoop-base:hadoop-nodemanager
+    networks:
+      default:
+        ipv4_address: 172.28.1.4
+    container_name: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    env_file:
+      - ./conf/hadoop/hadoop.env
+
+  historyserver:
+    image: cploutarchou/hadoop-base:history-server
+    networks:
+      default:
+        ipv4_address: 172.28.1.5
+    container_name: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    volumes:
+      - ./hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - ./conf/hadoop/hadoop.env
 
@@ -62,34 +84,10 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
 
-  nodemanager:
-    image: cploutarchou/hadoop-base:hadoop-nodemanager
-    networks:
-      - default
-    container_name: nodemanager
-    restart: always
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
-    env_file:
-      - ./conf/hadoop/hadoop.env
-
-  historyserver:
-    image: cploutarchou/hadoop-base:history-server
-    networks:
-      - default
-    container_name: historyserver
-    restart: always
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
-    volumes:
-      - ./hadoop_historyserver:/hadoop/yarn/timeline
-    env_file:
-      - ./conf/hadoop/hadoop.env
-
 
 networks:
   default:
     ipam:
       driver: default
       config:
-        - subnet: 172.28.0.0/16
+        - subnet: 172.28.1.0/16
