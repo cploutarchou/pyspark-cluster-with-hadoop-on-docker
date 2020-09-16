@@ -30,6 +30,8 @@ services:
     image: cploutarchou/hadoop-base:datanode
     container_name: datanode
     restart: always
+    ports:
+      - 9864:9864
     volumes:
       - ./hadoop_datanode:/hadoop/dfs/data
     environment:
@@ -50,8 +52,10 @@ services:
     image: cploutarchou/hadoop-base:hadoop-nodemanager
     container_name: nodemanager
     restart: always
+    ports:
+      - 8031:8031
     environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8031"
     env_file:
       - ./conf/hadoop/hadoop.env
 
@@ -67,3 +71,6 @@ services:
       - ./conf/hadoop/hadoop.env
 
 
+networks:
+  default:
+    name: tdm_default
