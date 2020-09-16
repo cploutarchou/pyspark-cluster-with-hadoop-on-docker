@@ -6,16 +6,20 @@ volumes:
 services:
 
   nginx:
-    image: nginx:latest
+    image: cploutarchou/hadoop-base:namenode
     container_name: production_nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - my-network-name
     ports:
       - 80:80
       - 443:443
 
   jupyterlab:
     build: ./build/docker/jupyterlab/
+    networks:
+      - my-network-name
     ports:
       - "8888:8888"
     volumes:
@@ -25,6 +29,8 @@ services:
   namenode:
     image: cploutarchou/hadoop-base:namenode
     container_name: namenode
+    networks:
+      - my-network-name
     restart: always
     ports:
       - 9870:9870
@@ -39,6 +45,8 @@ services:
   datanode:
     image: cploutarchou/hadoop-base:datanode
     container_name: datanode
+    networks:
+      - my-network-name
     restart: always
     ports:
       - 9864:9864
@@ -52,6 +60,8 @@ services:
   resourcemanager:
     image: cploutarchou/hadoop-base:hadoop-nodemanager
     container_name: resourcemanager
+    networks:
+      - my-network-name
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
@@ -61,6 +71,8 @@ services:
   nodemanager:
     image: cploutarchou/hadoop-base:hadoop-nodemanager
     container_name: nodemanager
+    networks:
+      - my-network-name
     restart: always
     ports:
       - 8031:8031
@@ -73,6 +85,8 @@ services:
     image: cploutarchou/hadoop-base:history-server
     container_name: historyserver
     restart: always
+    networks:
+      - my-network-name
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
@@ -82,5 +96,4 @@ services:
 
 
 networks:
-  default:
-    name: tdm_default
+  my-network-name:
