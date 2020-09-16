@@ -1,6 +1,7 @@
 FROM cploutarchou/hadoop-base:hadoop-base
 
-MAINTAINER Christos Ploutarchou <cploutarchou@gmail.com>
+LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
+
 
 HEALTHCHECK CMD curl -f http://localhost:9864/ || exit 1
 
