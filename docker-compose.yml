@@ -4,6 +4,16 @@ volumes:
     name: "Hadoop_Distributed_File_System"
     driver: local
 services:
+
+  nginx:
+    image: nginx:latest
+    container_name: production_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+      - 443:443
+
   jupyterlab:
     build: ./build/docker/jupyterlab/
     ports:
@@ -30,6 +40,8 @@ services:
     image: cploutarchou/hadoop-base:datanode
     container_name: datanode
     restart: always
+    ports:
+      - 9864:9864
     volumes:
       - ./hadoop_datanode:/hadoop/dfs/data
     environment:
@@ -50,8 +62,10 @@ services:
     image: cploutarchou/hadoop-base:hadoop-nodemanager
     container_name: nodemanager
     restart: always
+    ports:
+      - 8031:8031
     environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8031"
     env_file:
       - ./conf/hadoop/hadoop.env
 
@@ -67,3 +81,6 @@ services:
       - ./conf/hadoop/hadoop.env
 
 
+networks:
+  default:
+    name: tdm_default
