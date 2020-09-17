@@ -23,7 +23,7 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
     networks:
-      vpcbr:
+      hadoop:
         ipv4_address: 10.5.0.5
 
   datanode:
@@ -39,7 +39,7 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
     networks:
-      vpcbr:
+      hadoop:
         ipv4_address: 10.5.0.2
 
   resourcemanager:
@@ -53,7 +53,7 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
     networks:
-      vpcbr:
+      hadoop:
         ipv4_address: 10.5.0.3
 
   nodemanager1:
@@ -67,7 +67,7 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
     networks:
-      vpcbr:
+      hadoop:
         ipv4_address: 10.5.0.4
 
   historyserver:
@@ -83,7 +83,7 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
     networks:
-      vpcbr:
+      hadoop:
         ipv4_address: 10.5.0.6
 
 
@@ -92,7 +92,7 @@ volumes:
   hadoop_datanode:
   hadoop_historyserver:
 networks:
-  vpcbr:
+  hadoop:
     driver: bridge
     ipam:
       config:
