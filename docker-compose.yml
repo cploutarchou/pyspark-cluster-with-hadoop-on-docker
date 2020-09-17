@@ -1,27 +1,14 @@
-version: "3.6"
-volumes:
-  shared-workspace:
-    name: "Hadoop_Distributed_File_System"
-    driver: local
+version: "3"
+
 services:
-
-  nginx:
-    image: nginx:latest
-    container_name: production_nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-      - 443:443
-
   jupyterlab:
     build: ./build/docker/jupyterlab/
+    container_name: jupyterlab
     ports:
       - "8888:8888"
     volumes:
       - ./data:/opt/app/data
     entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --notebook-dir=/opt/app/data --allow-root'
-
   namenode:
     image: cploutarchou/hadoop-base:namenode
     container_name: namenode
@@ -30,9 +17,9 @@ services:
       - 9870:9870
       - 9000:9000
     volumes:
-      - ./hadoop_namenode:/hadoop/dfs/name
+      - hadoop_namenode:/hadoop/dfs/name
     environment:
-      - CLUSTER_NAME=test
+      - CLUSTER_NAME=dev
     env_file:
       - ./conf/hadoop/hadoop.env
 
@@ -40,17 +27,15 @@ services:
     image: cploutarchou/hadoop-base:datanode
     container_name: datanode
     restart: always
-    ports:
-      - 9864:9864
     volumes:
-      - ./hadoop_datanode:/hadoop/dfs/data
+      - hadoop_datanode:/hadoop/dfs/data
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./conf/hadoop/hadoop.env
 
   resourcemanager:
-    image: cploutarchou/hadoop-base:hadoop-nodemanager
+    image: cploutarchou/hadoop-base:resource-manager
     container_name: resourcemanager
     restart: always
     environment:
@@ -58,14 +43,12 @@ services:
     env_file:
       - ./conf/hadoop/hadoop.env
 
-  nodemanager:
+  nodemanager1:
     image: cploutarchou/hadoop-base:hadoop-nodemanager
     container_name: nodemanager
     restart: always
-    ports:
-      - 8031:8031
     environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8031"
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     env_file:
       - ./conf/hadoop/hadoop.env
 
@@ -76,11 +59,11 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
-      - ./hadoop_historyserver:/hadoop/yarn/timeline
+      - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - ./conf/hadoop/hadoop.env
 
-
-networks:
-  default:
-    name: tdm_default
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
+  hadoop_historyserver:

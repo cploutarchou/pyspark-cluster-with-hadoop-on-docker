@@ -1,6 +1,6 @@
 FROM debian:9
 
-MAINTAINER Christos Ploutarchou<cploutarchou@gmail.com>
+LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       openjdk-8-jdk \
