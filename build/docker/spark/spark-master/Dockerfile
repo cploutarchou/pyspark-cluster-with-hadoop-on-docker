@@ -1,6 +1,6 @@
 ARG spark_version="3.0.1"
 ARG hadoop_version="3.2"
-FROM spark-base:${spark_version}-hadoop-${hadoop_version}
+FROM cploutarchou/spark-base:base-image
 
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
