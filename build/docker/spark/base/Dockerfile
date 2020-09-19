@@ -14,6 +14,7 @@ LABEL org.label-schema.schema-version="1.0"
 
 
 ARG shared_workspace=/opt/workspace
+ARG logs_dir=/logs/spark-master/
 
 RUN mkdir -p ${shared_workspace}/data && \
     mkdir -p /usr/share/man/man1 && \
@@ -22,8 +23,10 @@ RUN mkdir -p ${shared_workspace}/data && \
     ln -s /usr/bin/python3 /usr/bin/python
 
 ENV SHARED_WORKSPACE=${shared_workspace}
+ENV LOG_DIR=${logs_dir}
 
 # -- Runtime
 
 VOLUME ${shared_workspace}
+VOLUME ${logs_dir}
 CMD ["bash"]
