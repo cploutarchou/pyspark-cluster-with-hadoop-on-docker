@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+
   jupyterlab:
     image: cploutarchou/jupyterlab:latest
     container_name: jupyterlab
@@ -9,6 +10,7 @@ services:
     volumes:
       - ./data:/opt/app/data
     entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --notebook-dir=/opt/app/data --allow-root'
+
   namenode:
     image: cploutarchou/hadoop-base:namenode
     container_name: namenode
@@ -85,7 +87,6 @@ services:
     networks:
       hadoop:
         ipv4_address: 10.5.0.6
-
 
 volumes:
   hadoop_namenode:
