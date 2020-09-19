@@ -18,11 +18,10 @@ ARG hadoop_version="3.2"
 ENV SPARK_URL https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz
 
 RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
-    && tar -xf /tmp/spark.tgz && \
-    && mv spark-${spark_version}-bin-hadoop${hadoop_version} /usr/bin/ && \
-    && echo "alias pyspark=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/pyspark" >> ~/.bashrc && \
-    && echo "alias spark-shell=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/spark-shell" >> ~/.bashrc && \
-    && mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs && \
+    && tar -xf /tmp/spark.tgz && mv spark-${spark_version}-bin-hadoop${hadoop_version} /usr/bin/ \
+    && echo "alias pyspark=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/pyspark" >> ~/.bashrc \
+    && echo "alias spark-shell=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/spark-shell" >> ~/.bashrc \
+    && mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs \
     && rm /tmp/spark.tgz
 
 
