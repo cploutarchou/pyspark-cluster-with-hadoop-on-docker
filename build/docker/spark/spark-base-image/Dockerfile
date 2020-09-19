@@ -10,9 +10,12 @@ LABEL org.label-schema.description="Spark master image"
 LABEL org.label-schema.url="https://github.com/cploutarchou/pyspark-cluster-with-hadoop-on-docker"
 LABEL org.label-schema.schema-version="1.0"
 
-# -- Layer: Apache Spark
-RUN sudo apt-get install curl
+# Install prerequisites
+RUN apt-get update && apt-get install -y \
+curl
+CMD /bin/bash
 
+# -- Layer: Apache Spark
 
 ARG spark_version="3.0.1"
 ARG hadoop_version="3.2"
