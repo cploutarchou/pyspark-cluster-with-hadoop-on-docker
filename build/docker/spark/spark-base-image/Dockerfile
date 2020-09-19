@@ -1,6 +1,6 @@
 FROM debian:9
 
-LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com"
+LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
 ARG build_date=date+"%Y-%m-%d %T"
 
@@ -15,13 +15,16 @@ LABEL org.label-schema.schema-version="1.0"
 ARG spark_version="3.0.1"
 ARG hadoop_version="3.2"
 
-RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz -o spark.tgz && \
-    tar -xf spark.tgz && \
-    mv spark-${spark_version}-bin-hadoop${hadoop_version} /usr/bin/ && \
-    echo "alias pyspark=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/pyspark" >> ~/.bashrc && \
-    echo "alias spark-shell=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/spark-shell" >> ~/.bashrc && \
-    mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs && \
-    rm spark.tgz
+ENV SPARK_URL https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz
+
+RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
+    && tar -xf /tmp/spark.tgz && \
+    && mv spark-${spark_version}-bin-hadoop${hadoop_version} /usr/bin/ && \
+    && echo "alias pyspark=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/pyspark" >> ~/.bashrc && \
+    && echo "alias spark-shell=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/spark-shell" >> ~/.bashrc && \
+    && mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs && \
+    && rm /tmp/spark.tgz
+
 
 ENV SPARK_HOME /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
 ENV SPARK_MASTER_HOST spark-master
