@@ -15,4 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file ./build/docker/* --tag my-image-name:$(date +%s)
+      run: docker build . --file ./build/docker/hadoop/base/Dockerfile ./build/docker/hadoop/datanode/Dockerfile /
+        ./build/docker/hadoop/history-server/Dockerfile ./build/docker/hadoop/namenode/Dockerfile  /
+        ./build/docker/hadoop/nodemanager/Dockerfile ./build/docker/hadoop/resourcemanager/Dockerfile /
+        --tag my-image-name:$(date +%s)
