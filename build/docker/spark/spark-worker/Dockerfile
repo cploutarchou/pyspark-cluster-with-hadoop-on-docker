@@ -1,6 +1,6 @@
 ARG spark_version="3.0.1"
 ARG hadoop_version="3.2"
-FROM cploutarchou/spark-base:spark-master
+FROM cploutarchou/spark-base:spark-base-image
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
 # -- Layer: Image Metadata
