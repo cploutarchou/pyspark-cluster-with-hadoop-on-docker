@@ -11,6 +11,8 @@ LABEL org.label-schema.url="https://github.com/cploutarchou/pyspark-cluster-with
 LABEL org.label-schema.schema-version="1.0"
 
 # -- Layer: Apache Spark
+RUN sudo apt-get install curl
+
 
 ARG spark_version="3.0.1"
 ARG hadoop_version="3.2"
