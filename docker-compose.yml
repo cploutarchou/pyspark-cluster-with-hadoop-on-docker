@@ -2,7 +2,7 @@ version: "3"
 
 services:
   jupyterlab:
-    build: ./build/docker/jupyterlab/
+    image: cploutarchou/jupyterlab:latest
     container_name: jupyterlab
     ports:
       - "8888:8888"
