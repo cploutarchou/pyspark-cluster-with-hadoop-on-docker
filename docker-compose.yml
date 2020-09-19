@@ -104,9 +104,9 @@ services:
     image: cploutarchou/spark-base:spark-worker-image
     container_name: spark-worker-1
     environment:
-      - SERVICE_PRECONDITION: "10.5.0.7:8080 10.5.0.7:7077"
-      - SPARK_WORKER_CORES=1
-      - SPARK_WORKER_MEMORY=1024m
+      SERVICE_PRECONDITION: "10.5.0.7:8080 10.5.0.7:7077"
+        - SPARK_WORKER_CORES=1
+        - SPARK_WORKER_MEMORY=1024m
     ports:
       - 8081:8081
     volumes:
@@ -121,7 +121,7 @@ services:
     image: cploutarchou/spark-base:spark-worker-image
     container_name: spark-worker-2
     environment:
-      - SERVICE_PRECONDITION: "10.5.0.7:8080 10.5.0.7:7077"
+      SERVICE_PRECONDITION: "10.5.0.7:8080 10.5.0.7:7077"
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=1024m
     ports:
