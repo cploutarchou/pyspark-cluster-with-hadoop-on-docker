@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-buster
+FROM ubuntu:focal
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
 # -- Layer: Image Metadata
@@ -10,20 +10,45 @@ LABEL org.label-schema.name="Spark Cluster on Docker - Base Image"
 LABEL org.label-schema.description="Spark master image"
 LABEL org.label-schema.url="https://github.com/cploutarchou/pyspark-cluster-with-hadoop-on-docker"
 LABEL org.label-schema.schema-version="1.0"
+
+# -- Set TZ Timezone
+ENV TZ=Asia/Nicosia
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# -- Install wget
+RUN  apt-get update \
+  && apt-get install -y wget \
+  && apt-get install -y software-properties-common
+
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 # -- Layer: OS + Python
 
 
 ARG shared_workspace=/opt/workspace
 ARG logs_dir=/logs/spark-master/
 
-RUN mkdir -p ${shared_workspace}/data && \
-    mkdir -p /usr/share/man/man1 && \
-    apt-get update -y && \
-    apt-get install -y curl python3 r-base && \
-    ln -s /usr/bin/python3 /usr/bin/python
+RUN mkdir -p ${shared_workspace}/data
+RUN mkdir -p ${logs_dir}/
+
+RUN apt-get update
+RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
+RUN add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
+RUN apt-get update
+RUN apt-get install -y adoptopenjdk-8-hotspot
+
+# Install python3.6
+RUN add-apt-repository --yes ppa:deadsnakes/ppa
+RUN apt update
+RUN apt install -y python3.6
+RUN apt install -y python3.6-dev
+
+
+RUN rm -rf /var/lib/apt/lists/
+
 
 ENV SHARED_WORKSPACE=${shared_workspace}
 ENV LOG_DIR=${logs_dir}
+ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 
 # -- Runtime
 
