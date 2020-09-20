@@ -20,9 +20,6 @@ services:
     volumes:
       - shared-workspace:/opt/workspace
       - logs_dir:/logs/spark-master
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.7
 
   spark-worker-1:
     image: cploutarchou/spark-base:spark-worker-image
@@ -36,9 +33,7 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.8
+
 
   spark-worker-2:
     image: cploutarchou/spark-base:spark-worker-image
@@ -52,9 +47,6 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.9
 
   namenode:
     image: cploutarchou/hadoop-base:namenode
