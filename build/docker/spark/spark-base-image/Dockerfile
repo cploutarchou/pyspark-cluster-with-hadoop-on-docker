@@ -1,4 +1,4 @@
-FROM debian:9
+FROM cploutarchou/spark-base:base-image
 
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
