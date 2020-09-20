@@ -17,6 +17,7 @@ LABEL org.label-schema.schema-version="1.0"
 # -- Runtime
 ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 ENV SPARK_MASTER_HOST 127.0.0.1
+ENV SPARK_MASTER_PORT 7077
 EXPOSE 8080
 
 CMD bin/spark-class org.apache.spark.deploy.worker.Worker spark://${SPARK_MASTER_HOST}:${SPARK_MASTER_PORT} >> logs/spark-worker.out
