@@ -31,7 +31,10 @@ RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
 
 ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 ENV SPARK_HOME /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
-ENV SPARK_MASTER_HOST locahost
+ENV PATH=$PATH:$SPARK_HOME/bin
+ENV PYTHONPATH=/usr/bin/python3.6
+ENV PYSPARK_PYTHON=/usr/bin/python3.6
+ENV SPARK_MASTER_HOST 0.0.0.0
 ENV SPARK_MASTER_PORT 7077
 ENV PYSPARK_PYTHON python3.6
 
