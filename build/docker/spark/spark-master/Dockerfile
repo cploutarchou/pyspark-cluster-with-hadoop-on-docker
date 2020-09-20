@@ -15,7 +15,7 @@ LABEL org.label-schema.url="https://github.com/cploutarchou/pyspark-cluster-with
 LABEL org.label-schema.schema-version="1.0"
 
 # -- Runtime
-
+ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 EXPOSE 8080 7077
 
-CMD bin/spark-class org.apache.spark.deploy.master.Master >> logs/spark-master.out
+CMD bin/start-master.sh starting org.apache.spark.deploy.master.Master, logging to log_file logs/spark-master.out
