@@ -34,8 +34,7 @@ ENV SPARK_HOME /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
 ENV PATH=$PATH:$SPARK_HOME/bin
 ENV PYTHONPATH=/usr/bin/python3.6
 ENV PYSPARK_PYTHON=/usr/bin/python3.6
-ENV SPARK_MASTER_HOST 127.0.0.1
-ENV SPARK_MASTER_PORT 7077
+
 ENV PYSPARK_PYTHON python3.6
 
 # -- Runtime
