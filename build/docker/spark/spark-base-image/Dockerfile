@@ -1,4 +1,4 @@
-FROM debian:9
+FROM cploutarchou/spark-base:base-image
 
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
@@ -29,11 +29,11 @@ RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
     && mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs \
     && rm /tmp/spark.tgz
 
-
+ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 ENV SPARK_HOME /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
-ENV SPARK_MASTER_HOST spark-master
+ENV SPARK_MASTER_HOST locahost
 ENV SPARK_MASTER_PORT 7077
-ENV PYSPARK_PYTHON python3
+ENV PYSPARK_PYTHON python3.6
 
 # -- Runtime
 
