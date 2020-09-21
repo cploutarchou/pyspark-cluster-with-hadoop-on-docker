@@ -24,18 +24,16 @@ ENV SPARK_URL https://archive.apache.org/dist/spark/spark-${spark_version}/spark
 
 RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
     && tar -xf /tmp/spark.tgz && mv spark-${spark_version}-bin-hadoop${hadoop_version} /usr/bin/ \
-    && echo "alias pyspark=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/pyspark" >> ~/.bashrc \
-    && echo "alias spark-shell=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/spark-shell" >> ~/.bashrc \
+    && echo "export JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64" >> ~/.bashrc \
+    && echo "export SPARK_HOME=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}" >> ~/.bashrc \
+    && echo "export SPARK_MASTER_HOST=localhost"  >> ~/.bashrc \
+    && echo "export PATH=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin" >> ~/.bashrc \
+    && echo "export PYTHONPATH=/usr/bin/python3.6" >> ~/.bashrc \
+    && echo "export PYSPARK_PYTHON=/usr/bin/python3.6" >> ~/.bashrc \
+    && echo "export SPARK_MASTER_PORT=7077" >> ~/.bashrc \
+    && echo "export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH" >> ~/.bashrc \
     && mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs \
     && rm /tmp/spark.tgz
-
-ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
-ENV SPARK_HOME /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
-ENV PATH=$PATH:$SPARK_HOME/bin
-ENV PYTHONPATH=/usr/bin/python3.6
-ENV PYSPARK_PYTHON=/usr/bin/python3.6
-
-ENV PYSPARK_PYTHON python3.6
 
 # -- Runtime
 
