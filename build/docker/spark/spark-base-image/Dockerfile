@@ -36,5 +36,4 @@ RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
     && rm /tmp/spark.tgz
 
 # -- Runtime
-
-WORKDIR ${SPARK_HOME}
+WORKDIR /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
