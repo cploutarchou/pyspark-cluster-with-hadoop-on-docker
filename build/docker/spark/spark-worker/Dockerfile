@@ -19,5 +19,5 @@ ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 
 EXPOSE 8080
 
-ARG spark_path="/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}"
-CMD ${spark_path}/bin/spark-class org.apache.spark.deploy.worker.Worker spark://127.0.0.1:7077 >> logs/spark-worker.out
+ARG spark_path="/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin/spark-class"
+CMD ${spark_path} org.apache.spark.deploy.worker.Worker spark://127.0.0.1:7077 >> logs/spark-worker.out
