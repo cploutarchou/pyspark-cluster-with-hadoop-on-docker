@@ -31,6 +31,7 @@ RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
     && echo "export PYTHONPATH=/usr/bin/python3.6" >> ~/.bashrc \
     && echo "export PYSPARK_PYTHON=/usr/bin/python3.6" >> ~/.bashrc \
     && echo "export SPARK_MASTER_PORT=7077" >> ~/.bashrc \
+    && echo "export SPARK_LOCAL_IP=127.0.0.1" >> ~/.bashrc \
     && echo "export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH" >> ~/.bashrc \
     && mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs \
     && rm /tmp/spark.tgz
