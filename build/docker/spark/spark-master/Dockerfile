@@ -19,8 +19,6 @@ ENV JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 
 EXPOSE 8080 7077
 
-spark_version="3.0.1"
-hadoop_version="3.2"
-spark_path = "/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}"
+ARG spark_path="/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}"
 
 CMD {spark_path}/bin/spark-class starting org.apache.spark.deploy.master.Master, logging to log_file logs/spark-master.out
