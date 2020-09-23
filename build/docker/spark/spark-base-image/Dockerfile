@@ -20,21 +20,19 @@ CMD /bin/bash
 ARG spark_version="3.0.1"
 ARG hadoop_version="3.2"
 
-ENV SPARK_URL https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz
+RUN apt-get update -y && \
+    apt-get install -y curl && \
+    curl https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz -o spark.tgz && \
+    tar -xf spark.tgz && \
+    mv spark-${spark_version}-bin-hadoop${hadoop_version} /usr/bin/ && \
+    mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs && \
+    rm spark.tgz
 
-RUN set -x && curl -fSL "$SPARK_URL" -o /tmp/spark.tgz \
-    && tar -xf /tmp/spark.tgz && mv spark-${spark_version}-bin-hadoop${hadoop_version} /usr/bin/ \
-    && echo "export JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64" >> ~/.bashrc \
-    && echo "export SPARK_HOME=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}" >> ~/.bashrc \
-    && echo "export SPARK_MASTER_HOST=localhost"  >> ~/.bashrc \
-    && echo "export PATH=/usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/bin" >> ~/.bashrc \
-    && echo "export PYTHONPATH=/usr/bin/python3.6" >> ~/.bashrc \
-    && echo "export PYSPARK_PYTHON=/usr/bin/python3.6" >> ~/.bashrc \
-    && echo "export SPARK_MASTER_PORT=7077" >> ~/.bashrc \
-    && echo "export SPARK_LOCAL_IP=127.0.0.1" >> ~/.bashrc \
-    && echo "export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH" >> ~/.bashrc \
-    && mkdir /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/logs \
-    && rm /tmp/spark.tgz
+ENV SPARK_HOME /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
+ENV SPARK_MASTER_HOST spark-master
+ENV SPARK_MASTER_PORT 7077
+ENV PYSPARK_PYTHON python3
 
 # -- Runtime
-WORKDIR /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
+
+WORKDIR ${SPARK_HOME}
