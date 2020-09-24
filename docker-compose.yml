@@ -3,7 +3,7 @@ version: "3.6"
 services:
 
   jupyterlab:
-    image: cploutarchou/jupyterlab:latest
+    image: cploutarchou/jupyterlab:jupyterlab
     container_name: jupyterlab
     ports:
       - 8888:8888
