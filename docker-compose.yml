@@ -1,4 +1,4 @@
-version: "3"
+version: "3.6"
 
 services:
 
@@ -6,10 +6,9 @@ services:
     image: cploutarchou/jupyterlab:latest
     container_name: jupyterlab
     ports:
-      - "8888:8888"
+      - 8888:8888
     volumes:
-      - ./data:/opt/app/data
-    entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --notebook-dir=/opt/app/data --allow-root'
+      - shared-workspace:/opt/workspace
 
   spark-master:
     image: cploutarchou/spark-base:spark-master-image
@@ -33,7 +32,6 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
-
 
   spark-worker-2:
     image: cploutarchou/spark-base:spark-worker-image
