@@ -45,7 +45,7 @@ services:
     depends_on:
       - spark-master
 
-  namenode:
+  hadoop:
     image: cploutarchou/hadoop-base:namenode
     container_name: hadoop
     restart: always
@@ -77,9 +77,6 @@ services:
         ipv4_address: 10.5.0.5
 
 volumes:
-  hadoop_namenode:
-  hadoop_datanode:
-  hadoop_historyserver:
   shared-workspace:
   logs_dir:
 networks:
