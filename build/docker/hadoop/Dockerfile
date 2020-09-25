@@ -26,9 +26,7 @@ RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
 RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
 # java
-RUN curl -LO 'http://download.oracle.com/otn-pub/java/jdk/7u71-b14/jdk-7u71-linux-x64.rpm' -H 'Cookie: oraclelicense=accept-securebackup-cookie'
-RUN rpm -i jdk-7u71-linux-x64.rpm
-RUN rm jdk-7u71-linux-x64.rpm
+RUN yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
 ENV JAVA_HOME /usr/java/default
 ENV PATH $PATH:$JAVA_HOME/bin
