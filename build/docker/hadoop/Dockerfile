@@ -50,6 +50,11 @@ RUN export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 RUN export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 RUN export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
+ADD /build/docker/hadoop/build.sh /etc/build.sh
+RUN chown root:root /etc/build.sh
+RUN chmod 700 /etc/build.sh
+
+ENV BOOTSTRAP /etc/build.sh
 
 RUN mkdir $HADOOP_HOME/input
 RUN cp $HADOOP_HOME/etc/hadoop/*.xml $HADOOP_HOME/input
@@ -69,10 +74,8 @@ RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 
 RUN hdfs namenode -format
 
+CMD ["/etc/build.sh", "-d"]
 
-RUN $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/sbin/start-yarn.sh && hdfs dfs -mkdir -p /user/root && $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input
-
-RUN jps
 
 # Hdfs ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
