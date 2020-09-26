@@ -1,4 +1,4 @@
-FROM cploutarchou/centos6.10-pam:latest
+FROM ubuntu:19.10
 
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
@@ -10,60 +10,63 @@ LABEL org.label-schema.description="Spark master image"
 LABEL org.label-schema.url="https://github.com/cploutarchou/pyspark-cluster-with-hadoop-on-docker"
 LABEL org.label-schema.schema-version="1.0"
 
+RUN apt-get update
 
 USER root
 
 # install dev tools
-RUN yum clean all; \
-    rpm --rebuilddb; \
-    yum install -y curl which tar sudo openssh-server openssh-clients rsync java-1.8.0-openjdk java-1.8.0-openjdk-devel
-RUN yum update -y libselinux
-
-# passwordless ssh
-RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
-RUN ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
-RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
-RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
-
+RUN apt-get update
+RUN apt install -y wget gnupg gnupg1 gnupg2 software-properties-common curl
+RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
+RUN add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
+RUN apt-get update
+RUN apt-get install -y adoptopenjdk-8-hotspot
+RUN apt install -y openssh-server openssh-client
+ENV LANG en_US.utf8
 ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 
-# download native support
-RUN mkdir -p /tmp/native
-RUN curl -L https://github.com/cploutarchou/native-hadoop-library/archive/v1.0.tar.gz | tar -xz -C /tmp/native
+
+RUN mkdir -p /root/.ssh/
+CMD ["/bin/bash"," echo ssh-keygen -t rsa"]
+CMD ["/bin/bash"," echo cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_key"]
+CMD ["/bin/bash"," echo ssh localhost"]
 
 # hadoop
 RUN curl -s https://downloads.apache.org/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.10.1 hadoop
 
+
 ENV HADOOP_HOME /usr/local/hadoop
-ENV HADOOP_INSTALL $HADOOP_HOME
-ENV HADOOP_MAPRED_HOME $HADOOP_HOME
-ENV HADOOP_COMMON_HOME $HADOOP_HOME
-ENV HADOOP_HDFS_HOME $HADOOP_HOME
-ENV YARN_HOME $HADOOP_HOME
+ENV PATH $PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+
+RUN export JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
+RUN export HADOOP_HOME=/usr/local/hadoop
+RUN export HADOOP_INSTALL=$HADOOP_HOME
+RUN export HADOOP_MAPRED_HOME=$HADOOP_HOME
+RUN export HADOOP_COMMON_HOME=$HADOOP_HOME
+RUN export HADOOP_HDFS_HOME=$HADOOP_HOME
+RUN export YARN_HOME=$HADOOP_HOME
+RUN export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+RUN export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+RUN export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
 
 RUN mkdir $HADOOP_HOME/input
 RUN cp $HADOOP_HOME/etc/hadoop/*.xml $HADOOP_HOME/input
 
-# pseudo distributed
+## pseudo distributed
 ADD /build/docker/hadoop/conf/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 RUN sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/core-site.xml > /usr/local/hadoop/etc/hadoop/core-site.xml
 ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-
+#
 ADD /build/docker/hadoop/conf/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
 ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
 
-
-RUN rm -rf /usr/local/hadoop/lib/native
-RUN mv /tmp/native /usr/local/hadoop/lib
-
+#
 ADD /build/docker/hadoop/conf/ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 RUN chown root:root /root/.ssh/config
-
-
 
 ADD /build/docker/hadoop/conf/bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh
@@ -74,17 +77,11 @@ ENV BOOTSTRAP /etc/bootstrap.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
-
+#
 RUN $HADOOP_HOME/bin/hdfs namenode -format
-
-RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
-RUN echo "UsePAM no" >> /etc/ssh/sshd_config
-RUN echo "Port 2122" >> /etc/ssh/sshd_config
-
-RUN service sshd start  && $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root
-
-
-CMD ["/etc/bootstrap.sh", "-d"]
+#
+RUN service sshd start && $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root
+RUN service sshd start && $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input
 
 # Hdfs ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
