@@ -16,7 +16,7 @@ USER root
 
 # install dev tools
 RUN apt-get update
-RUN apt install -y wget gnupg gnupg1 gnupg2 software-properties-common curl apt-utils
+RUN apt install -y wget gnupg gnupg1 gnupg2 software-properties-common curl
 RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
 RUN add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
 RUN apt-get update
@@ -27,9 +27,9 @@ ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 
 
 RUN mkdir -p /root/.ssh/
-CMD ["/bin/bash"," echo ssh-keygen -t rsa"]
-CMD ["/bin/bash"," echo cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_key"]
-CMD ["/bin/bash"," echo ssh localhost"]
+RUN ssh-keygen -t rsa
+RUN cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_key
+RUN ssh localhost
 
 # hadoop
 RUN curl -s https://downloads.apache.org/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz | tar -xz -C /usr/local/
@@ -66,14 +66,13 @@ RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 
-RUN systemctl restart ssh
-RUN ufw allow ssh
-RUN systemctl enable ssh
-RUN ssh localhost
+
 RUN hdfs namenode -format
 
-RUN $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root
-RUN $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input
+
+RUN $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/sbin/start-yarn.sh && hdfs dfs -mkdir -p /user/root && $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input
+
+RUN jps
 
 # Hdfs ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
