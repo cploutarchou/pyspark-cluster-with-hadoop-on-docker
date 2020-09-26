@@ -25,12 +25,6 @@ RUN apt install -y openssh-server openssh-client
 ENV LANG en_US.utf8
 ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 
-
-RUN mkdir -p /root/.ssh/
-RUN ssh-keygen -t rsa
-RUN cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_key
-RUN ssh localhost
-
 # hadoop
 RUN curl -s https://downloads.apache.org/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.10.1 hadoop
@@ -72,7 +66,6 @@ RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 
 
-RUN hdfs namenode -format
 
 CMD ["/etc/build.sh", "-d"]
 
