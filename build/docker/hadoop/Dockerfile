@@ -58,7 +58,7 @@ ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xm
 ADD /build/docker/hadoop/conf/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
 ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
-RUN $HADOOP_HOME/bin/hdfs namenode -format
+RUN hdfs namenode -format
 
 
 RUN rm -rf /usr/local/hadoop/lib/native
