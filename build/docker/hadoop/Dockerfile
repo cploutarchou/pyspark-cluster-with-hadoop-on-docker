@@ -16,7 +16,7 @@ USER root
 
 # install dev tools
 RUN apt-get update
-RUN apt install -y wget gnupg gnupg1 gnupg2 software-properties-common curl
+RUN apt install -y wget gnupg gnupg1 gnupg2 software-properties-common curl apt-utils
 RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
 RUN add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
 RUN apt-get update
@@ -77,9 +77,9 @@ ENV BOOTSTRAP /etc/bootstrap.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
-#
-RUN $HADOOP_HOME/bin/hdfs namenode -format
-#
+
+CMD ["/bin/bash"," echo hdfs namenode -format"]
+
 RUN service sshd start && $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root
 RUN service sshd start && $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input
 
