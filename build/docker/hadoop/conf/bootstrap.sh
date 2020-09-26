@@ -1,6 +1,6 @@
 #!/bin/bash
 
-: ${HADOOP_PREFIX:=/usr/local/hadoop}
+: ${HADOOP_HOME:=/usr/local/hadoop}
 
 $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
@@ -14,9 +14,9 @@ sed s/HOSTNAME/$HOSTNAME/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > 
 
 
 service sshd start
-$HADOOP_PREFIX/sbin/start-dfs.sh
-$HADOOP_PREFIX/sbin/start-yarn.sh
-$HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver
+$HADOOP_HOME/sbin/start-dfs.sh
+$HADOOP_HOME/sbin/start-yarn.sh
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 
 if [[ $1 == "-d" ]]; then
   while true; do sleep 1000; done
