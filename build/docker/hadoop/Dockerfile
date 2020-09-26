@@ -16,7 +16,7 @@ USER root
 # install dev tools
 RUN yum clean all; \
     rpm --rebuilddb; \
-    yum install -y curl which tar sudo openssh-server openssh-clients rsync
+    yum install -y curl which tar sudo openssh-server openssh-clients rsync java-1.8.0-openjdk java-1.8.0-openjdk-devel
 RUN yum update -y libselinux
 
 # passwordless ssh
@@ -24,9 +24,6 @@ RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
 RUN ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
 RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
 RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
-
-# java
-RUN yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
 ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 ENV PATH $PATH:$JAVA_HOME/bin
@@ -55,7 +52,7 @@ RUN mkdir $HADOOP_PREFIX/input
 RUN cp $HADOOP_PREFIX/etc/hadoop/*.xml $HADOOP_PREFIX/input
 
 # pseudo distributed
-ADD /build/docker/hadoop/conf/core-site.xml $HADOOP_PREFIX/etc/hadoop/core-site.xml.template
+ADD /build/docker/hadoop/conf/core-site.xml $HADOOP_PREFIX/etc/hadoop/core-site.xml
 RUN sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml
 ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
 
