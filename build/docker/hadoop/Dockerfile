@@ -86,7 +86,7 @@ RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
 RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
-RUN service sshd start && start-all.sh && hdfs namenode -format && hdfs dfs -mkdir -p /user/root
+RUN service sshd start && $HADOOP_HOME/sbin/start-all.sh && hdfs namenode -format && hdfs dfs -mkdir -p /user/root
 
 
 CMD ["/etc/bootstrap.sh", "-d"]
