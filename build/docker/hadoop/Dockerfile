@@ -58,7 +58,6 @@ ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xm
 ADD /build/docker/hadoop/conf/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
 ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
-RUN hdfs namenode -format
 
 
 RUN rm -rf /usr/local/hadoop/lib/native
@@ -87,7 +86,7 @@ RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
 RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
-RUN service sshd start && start-all.sh && hdfs dfs -mkdir -p /user/root
+RUN service sshd start && start-all.sh && hdfs namenode -format && hdfs dfs -mkdir -p /user/root
 
 
 CMD ["/etc/bootstrap.sh", "-d"]
