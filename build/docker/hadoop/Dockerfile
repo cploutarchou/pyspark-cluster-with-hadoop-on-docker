@@ -28,10 +28,9 @@ RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 # java
 RUN yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
-ENV JAVA_HOME /usr/java/default
+ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 ENV PATH $PATH:$JAVA_HOME/bin
-RUN rm /usr/bin/java && ln -s $JAVA_HOME/bin/java /usr/bin/java
-
+RUN update-alternatives --display java
 # download native support
 RUN mkdir -p /tmp/native
 RUN curl -L https://github.com/cploutarchou/native-hadoop-library/archive/v1.0.tar.gz | tar -xz -C /tmp/native
@@ -81,10 +80,11 @@ RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
 
-# workingaround docker.io build error
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
+
+
 
 # fix the 254 error code
 RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
