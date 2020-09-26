@@ -46,7 +46,7 @@ services:
       - spark-master
 
   hadoop:
-    image: cploutarchou/hadoop-base:namenode
+    image: cploutarchou/hadoop-base:hadoop
     container_name: hadoop
     restart: always
     ports:
