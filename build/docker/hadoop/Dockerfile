@@ -79,14 +79,13 @@ RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 
+RUN $HADOOP_HOME/bin/hdfs namenode -format
 
-
-# fix the 254 error code
 RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
 RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
-RUN service sshd start && $HADOOP_HOME/sbin/start-all.sh && hdfs namenode -format && hdfs dfs -mkdir -p /user/root
+RUN service sshd start && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/sbin/start-yarn.sh && hdfs dfs -mkdir -p /user/root
 
 
 CMD ["/etc/bootstrap.sh", "-d"]
