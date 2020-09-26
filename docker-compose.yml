@@ -9,7 +9,6 @@ services:
       - 8888:8888
     volumes:
       - shared-workspace:/opt/workspace
-
   spark-master:
     image: cploutarchou/spark-base:spark-master-image
     container_name: spark-master
@@ -46,87 +45,38 @@ services:
     depends_on:
       - spark-master
 
-  namenode:
+  hadoop:
     image: cploutarchou/hadoop-base:namenode
-    container_name: namenode
+    container_name: hadoop
     restart: always
     ports:
-      - 9870:9870
+      # Hdfs ports
+      - 50010:50010
+      - 50020:50020
+      - 50070:50070
+      - 50075:50075
+      - 50090:50090
+      - 8020:8020
       - 9000:9000
-    volumes:
-      - hadoop_namenode:/hadoop/dfs/name
-    environment:
-      - CLUSTER_NAME=dev
-    env_file:
-      - ./conf/hadoop/hadoop.env
+      # Mapred ports
+      - 10020:10020
+      - 19888:19888
+      #Yarn ports
+      - 8030:8030
+      - 8031:8031
+      - 8032:8032
+      - 8033:8033
+      - 8040:8040
+      - 8042:8042
+      - 8088:8088
+      #Other ports
+      - 49707:49707
+      - 2122:2122
     networks:
       hadoop:
         ipv4_address: 10.5.0.5
 
-  datanode:
-    image: cploutarchou/hadoop-base:datanode
-    container_name: datanode
-    restart: always
-    ports:
-      - 9864:9864
-    volumes:
-      - hadoop_datanode:/hadoop/dfs/data
-    environment:
-      SERVICE_PRECONDITION: "10.5.0.5:9870"
-    env_file:
-      - ./conf/hadoop/hadoop.env
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.2
-
-  resourcemanager:
-    image: cploutarchou/hadoop-base:resource-manager
-    container_name: resourcemanager
-    restart: always
-    ports:
-      - 8088:8088
-    environment:
-      SERVICE_PRECONDITION: "10.5.0.5:9000 10.5.0.5:9870 10.5.0.2:9864"
-    env_file:
-      - ./conf/hadoop/hadoop.env
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.3
-
-  nodemanager1:
-    image: cploutarchou/hadoop-base:hadoop-nodemanager
-    container_name: nodemanager
-    restart: always
-    ports:
-      - 8042:8042
-    environment:
-      SERVICE_PRECONDITION: "10.5.0.5:9000 10.5.0.5:9870 10.5.0.2:9864 10.5.0.3:8088"
-    env_file:
-      - ./conf/hadoop/hadoop.env
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.4
-
-  historyserver:
-    image: cploutarchou/hadoop-base:history-server
-    container_name: historyserver
-    restart: always
-    ports:
-      - 8188:8188
-    environment:
-      SERVICE_PRECONDITION: "10.5.0.5:9000 10.5.0.5:9870 10.5.0.2:9864 10.5.0.3:8088"
-    volumes:
-      - hadoop_historyserver:/hadoop/yarn/timeline
-    env_file:
-      - ./conf/hadoop/hadoop.env
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.6
-
 volumes:
-  hadoop_namenode:
-  hadoop_datanode:
-  hadoop_historyserver:
   shared-workspace:
   logs_dir:
 networks:
