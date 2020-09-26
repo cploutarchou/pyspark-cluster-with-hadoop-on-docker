@@ -68,20 +68,14 @@ ADD /build/docker/hadoop/conf/ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 RUN chown root:root /root/.ssh/config
 
-ADD /build/docker/hadoop/conf/bootstrap.sh /etc/bootstrap.sh
-RUN chown root:root /etc/bootstrap.sh
-RUN chmod 700 /etc/bootstrap.sh
-
-ENV BOOTSTRAP /etc/bootstrap.sh
-
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 
 CMD ["/bin/bash"," echo hdfs namenode -format"]
 
-RUN service ssh start && $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root
-RUN service ssh start && $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input
+RUN $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root
+RUN $HADOOP_HOME/etc/hadoop/hadoop-env.sh && $HADOOP_HOME/sbin/start-dfs.sh && $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input
 
 # Hdfs ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
