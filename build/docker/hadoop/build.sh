@@ -10,7 +10,7 @@ else
 fi
 mkdir -p ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
-ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa11 <<<y
+ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<<y
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub >>~/.ssh/authorized_key
 eval "$(ssh-agent -s)"
