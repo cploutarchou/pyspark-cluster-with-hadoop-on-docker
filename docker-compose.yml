@@ -71,7 +71,8 @@ services:
       - 8088:8088
       #Other ports
       - 49707:49707
-      - 2122:2122
+      - 9870:9870
+      - 22:22
 
 volumes:
   shared-workspace:
