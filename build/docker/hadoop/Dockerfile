@@ -58,7 +58,6 @@ ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xm
 
 RUN $HADOOP_HOME/bin/hdfs namenode -format -y
 
-CMD echo 127.0.0.1  localhost >> /etc/hosts; supervisord -n;
 CMD ["/etc/build.sh", "-d"]
 
 
