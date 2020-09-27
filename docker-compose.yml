@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3"
 
 services:
 
@@ -76,9 +76,3 @@ services:
 volumes:
   shared-workspace:
   logs_dir:
-networks:
-  hadoop:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.5.0.1/16
