@@ -49,9 +49,6 @@ RUN chmod 700 /etc/build.sh
 
 ENV BOOTSTRAP /etc/build.sh
 
-RUN mkdir $HADOOP_HOME/input
-RUN cp $HADOOP_HOME/etc/hadoop/*.xml $HADOOP_HOME/input
-
 ## pseudo distributed
 ADD /build/docker/hadoop/conf/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
