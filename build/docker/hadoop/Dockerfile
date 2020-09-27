@@ -32,7 +32,7 @@ RUN cd /usr/local && ln -s ./hadoop-2.10.1 hadoop
 
 ENV HADOOP_HOME /usr/local/hadoop
 ENV PATH $PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
-
+RUN which javac
 RUN export JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 RUN export HADOOP_HOME=/usr/local/hadoop
 RUN export HADOOP_INSTALL=$HADOOP_HOME

@@ -1,6 +1,7 @@
 #!/bin/bash
 eval "$(ssh-agent -s)"
-ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+javac -v
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa -f -y
 chmod 0600 ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa.pub >>~/.ssh/authorized_key
 hdfs namenode -format
