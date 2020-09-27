@@ -41,6 +41,7 @@ RUN export HADOOP_HDFS_HOME=$HADOOP_HOME
 RUN export YARN_HOME=$HADOOP_HOME
 RUN export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 RUN export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+RUN export HADOOP_SSH_OPTS="-p "'
 RUN export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
 ADD /build/docker/hadoop/build.sh /etc/build.sh
@@ -57,7 +58,7 @@ ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xm
 
 RUN $HADOOP_HOME/bin/hdfs namenode -format -y
 
-CMD echo 0.0.0.0  localhost >> /etc/hosts; supervisord -n;
+CMD echo 127.0.0.1  localhost >> /etc/hosts; supervisord -n;
 CMD ["/etc/build.sh", "-d"]
 
 
