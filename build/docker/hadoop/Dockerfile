@@ -56,8 +56,6 @@ ADD /build/docker/hadoop/conf/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-sit
 ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
 RUN $HADOOP_HOME/bin/hdfs namenode -format -y
-RUN $HADOOP_HOME/bin/hdfs dfs -mkdir /user
-RUN $HADOOP_HOME/bin/hdfs dfs -mkdir /user/hadoop
 
 CMD echo 0.0.0.0  localhost >> /etc/hosts; supervisord -n;
 CMD ["/etc/build.sh", "-d"]
