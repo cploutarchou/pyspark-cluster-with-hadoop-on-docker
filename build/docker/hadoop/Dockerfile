@@ -65,7 +65,7 @@ RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 
 
-CMD echo 127.0.0.1   privateDns subdomain localhost >> /etc/hosts; supervisord -n;
+CMD echo 0.0.0.0   privateDns subdomain localhost >> /etc/hosts; supervisord -n;
 CMD ["/etc/build.sh", "-d"]
 
 
@@ -76,4 +76,4 @@ EXPOSE 10020 19888
 #Yarn ports
 EXPOSE 8030 8031 8032 8033 8040 8042 8088
 #Other ports
-EXPOSE 49707 2122
+EXPOSE 49707 22 9870
