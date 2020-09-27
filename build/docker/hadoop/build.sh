@@ -15,4 +15,4 @@ ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<<y
 cat ~/.ssh/id_rsa.pub >>~/.ssh/authorized_key
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
-start-all.sh hdfs dfs -mkdir /user hdfs dfs -mkdir /user/hadoop
+ssh localhost start-all.sh hdfs dfs -mkdir /user hdfs dfs -mkdir /user/hadoop
