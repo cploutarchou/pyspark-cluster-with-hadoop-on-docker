@@ -72,9 +72,6 @@ services:
       #Other ports
       - 49707:49707
       - 2122:2122
-    networks:
-      hadoop:
-        ipv4_address: 10.5.0.5
 
 volumes:
   shared-workspace:
