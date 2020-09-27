@@ -29,8 +29,6 @@ ENV JAVA_HOME /usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 RUN curl -s https://downloads.apache.org/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.10.1 hadoop
 
-r
-
 
 ENV HADOOP_HOME /usr/local/hadoop
 ENV PATH $PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
@@ -56,9 +54,8 @@ ADD /build/docker/hadoop/conf/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xm
 ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 ADD /build/docker/hadoop/conf/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
 ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
+
 RUN $HADOOP_HOME/bin/hdfs namenode -format -y
-RUN $HADOOP_HOME/bin/bin/hdfs dfs -mkdir /user
-RUN $HADOOP_HOME/bin/bin/hdfs dfs -mkdir /user/hadoop
 
 CMD echo 0.0.0.0  localhost >> /etc/hosts; supervisord -n;
 CMD ["/etc/build.sh", "-d"]
