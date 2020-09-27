@@ -1,7 +1,9 @@
 #!/bin/bash
 eval "$(ssh-agent -s)"
-chmod 0600 ~/.ssh/authorized_keys
-cat ~/.ssh/id_rsa.pub >>~/.ssh/authorized_key
+mkdir -p /root/.ssh/authorized_keys
+chmod 0600 /root/.ssh/authorized_keys
+ssh-keygen -q -t rsa -N '' -f /root/.ssh/ssh/id_rsa <<<y 2>&1 >/dev/null
+cat /root/.ssh/id_rsa.pub >>/root/.ssh/authorized_key
 hdfs namenode -format
-"$HADOOP_HOME"/sbin/start-dfs.sh && "$HADOOP_HOME"/sbin/start-yarn.sh && hdfs dfs -mkdir -p /user/root
-"$HADOOP_HOME"/bin/hdfs dfs -put "$HADOOP_HOME"/etc/hadoop/ input
+./start-dfs.sh && ./start-yarn.sh && hdfs dfs -mkdir -p /user/root
+hdfs dfs -put "$HADOOP_HOME"/etc/hadoop/ input
