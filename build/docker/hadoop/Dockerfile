@@ -57,7 +57,7 @@ ADD /build/docker/hadoop/ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 RUN chown root:root /root/.ssh/config
 
-ADD bootstrap.sh /etc/bootstrap.sh
+ADD /build/docker/hadoop/bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh
 RUN chmod 700 /etc/bootstrap.sh
 
