@@ -69,9 +69,6 @@ RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
 
-RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
-RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
-
 CMD ["/etc/bootstrap.sh", "-d"]
 
 # Hdfs ports
