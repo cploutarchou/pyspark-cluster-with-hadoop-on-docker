@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3"
 
 services:
 
@@ -71,14 +71,8 @@ services:
       - 8088:8088
       #Other ports
       - 49707:49707
-      - 2122:2122
+      - 9870:9870
 
 volumes:
   shared-workspace:
   logs_dir:
-networks:
-  hadoop:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.5.0.1/16
