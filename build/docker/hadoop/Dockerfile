@@ -28,19 +28,7 @@ ENV JAVA_HOME /usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
 # hadoop
 RUN curl -s https://downloads.apache.org/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.10.1 hadoop
-#fix ssh-agent
-RUN mkdir /var/run/sshd
-RUN echo 'root:THEPASSWORDYOUCREATED' | chpasswd
-RUN sed -i 's/#*PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 
-# SSH login fix. Otherwise user is kicked off after login
-RUN sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
-
-ENV NOTVISIBLE="in users profile"
-RUN echo "export VISIBLE=now" >> /etc/profile
-
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
 
 ENV HADOOP_HOME /usr/local/hadoop
 ENV PATH $PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
@@ -56,12 +44,6 @@ RUN export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 RUN export HADOOP_SSH_OPTS="-p"
 RUN export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
-ADD /build/docker/hadoop/build.sh /etc/build.sh
-RUN chown root:root /etc/build.sh
-RUN chmod 700 /etc/build.sh
-
-ENV BOOTSTRAP /etc/build.sh
-
 ## pseudo distributed
 ADD /build/docker/hadoop/conf/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
@@ -70,6 +52,35 @@ ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xm
 
 RUN $HADOOP_HOME/bin/hdfs namenode -format -y
 
-CMD ["/etc/build.sh", "-d"]
+
+ADD /build/docker/hadoop/ssh_config /root/.ssh/config
+RUN chmod 600 /root/.ssh/config
+RUN chown root:root /root/.ssh/config
+
+ADD bootstrap.sh /etc/bootstrap.sh
+RUN chown root:root /etc/bootstrap.sh
+RUN chmod 700 /etc/bootstrap.sh
+
+ENV BOOTSTRAP /etc/bootstrap.sh
+
+
+RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
+RUN echo "UsePAM no" >> /etc/ssh/sshd_config
+RUN echo "Port 2122" >> /etc/ssh/sshd_config
+
+
+RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
+RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
+
+CMD ["/etc/bootstrap.sh", "-d"]
+
+# Hdfs ports
+EXPOSE 50010 50020 50070 50075 50090 8020 9000
+# Mapred ports
+EXPOSE 10020 19888
+#Yarn ports
+EXPOSE 8030 8031 8032 8033 8040 8042 8088
+#Other ports
+EXPOSE 49707 2122
 
 
