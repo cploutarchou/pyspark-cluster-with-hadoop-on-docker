@@ -1,4 +1,4 @@
-FROM cploutarchou/hadoop-base:hadoop-base
+FROM cploutarchou/hadoop-base:hadoop-main
 
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
