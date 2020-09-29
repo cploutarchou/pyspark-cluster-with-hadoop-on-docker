@@ -8,8 +8,8 @@ ENV YARN_CONF_yarn_timeline___service_leveldb___timeline___store_path=/hadoop/ya
 RUN mkdir -p /hadoop/yarn/timeline
 VOLUME /hadoop/yarn/timeline
 
-ADD /build/docker/hadoop/history-server/run.sh /run.sh
-RUN chmod a+x /run.sh
+ADD /build/docker/hadoop/history-server/build.sh /build.sh
+RUN chmod a+x /build.sh
 
 EXPOSE 8188
 
