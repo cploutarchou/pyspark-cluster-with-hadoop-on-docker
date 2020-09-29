@@ -16,7 +16,23 @@ jobs:
       - uses: actions/checkout@v2
       # Run Test for Hadoop image
       - name: Build the Haboop image
-        run: docker build . --file ./build/docker/hadoop/Dockerfile  --tag hadoop:latest$(date +%s)
+        run: docker build . --file ./build/docker/hadoop/base/Dockerfile  --tag my-image-name:$(date +%s)
+      # Run Test for Hadoop datanode
+      - name: Build the Haboop datanode
+        run: docker build . --file ./build/docker/hadoop/datanode/Dockerfile  --tag my-image-name:$(date +%s)
+      # Run Test for Hadoop history-server
+      - name: Build the Haboop history server
+        run: docker build . --file ./build/docker/hadoop/history-server/Dockerfile  --tag my-image-name:$(date +%s)
+      # Run Test for Hadoop namenode
+      - name: Build the Haboop namenode
+        run: docker build . --file ./build/docker/hadoop/namenode/Dockerfile  --tag my-image-name:$(date +%s)
+      # Run Test for Hadoop node manager
+      - name: Build the Haboop node manager
+        run: docker build . --file ./build/docker/hadoop/nodemanager/Dockerfile  --tag my-image-name:$(date +%s)
+      # Run Test for Hadoop resource manager
+      - name: Build the Haboop image
+        run: docker build . --file ./build/docker/hadoop/resourcemanager/Dockerfile  --tag my-image-name:$(date +%s)
+
       # Run for Spark image
       - name: Build the Spark image
         run: docker build . --file ./build/docker/spark/base/Dockerfile  --tag my-image-name:$(date +%s)
