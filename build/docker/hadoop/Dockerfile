@@ -55,7 +55,10 @@ RUN $HADOOP_HOME/bin/hdfs namenode -format -y
 
 ADD /build/docker/hadoop/ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
-RUN chown root:root /root/.ssh/config
+
+
+RUN mkdir /usr/local/hadoop-2.10.1/logs/
+RUN chown root:root /usr/local/hadoop-2.10.1/logs
 
 ADD /build/docker/hadoop/bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh
@@ -64,9 +67,10 @@ RUN chmod 700 /etc/bootstrap.sh
 ENV BOOTSTRAP /etc/bootstrap.sh
 
 
-RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
-RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
+RUN ufw allow ssh
+RUN restart ssh
+RUN systemctl restart ssh
 
 
 CMD ["/etc/bootstrap.sh", "-d"]
