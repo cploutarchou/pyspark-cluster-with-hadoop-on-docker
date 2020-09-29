@@ -68,7 +68,6 @@ ENV BOOTSTRAP /etc/bootstrap.sh
 
 
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
-RUN ufw allow ssh
 RUN restart ssh
 RUN systemctl restart ssh
 
