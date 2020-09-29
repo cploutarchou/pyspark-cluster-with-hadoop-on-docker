@@ -68,9 +68,6 @@ ENV BOOTSTRAP /etc/bootstrap.sh
 
 
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
-RUN restart ssh
-RUN systemctl restart ssh
-
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
