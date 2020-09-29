@@ -8,8 +8,8 @@ ENV HDFS_CONF_dfs_namenode_name_dir=file:///hadoop/dfs/name
 RUN mkdir -p /hadoop/dfs/name
 VOLUME /hadoop/dfs/name
 
-ADD /build/docker/hadoop/namenode/run.sh /run.sh
-RUN chmod a+x /run.sh
+ADD /build/docker/hadoop/namenode/build.sh /build.sh
+RUN chmod a+x /build.sh
 
 EXPOSE 9870
 
