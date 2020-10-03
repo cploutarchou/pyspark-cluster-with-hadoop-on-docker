@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install openjdk-8-jdk
 
 ENV HADOOP_VERSION 2.10.1
 
-# install hadoop 2.7.2
+# install hadoop 2.10.1
 RUN wget https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz && \
     tar -xzvf hadoop-$HADOOP_VERSION.tar.gz && \
     mv hadoop-$HADOOP_VERSION /usr/local/hadoop && \
@@ -32,8 +32,8 @@ ENV PATH=$PATH:/usr/local/hadoop/bin:/usr/local/hadoop/sbin
 RUN ssh-keygen -t rsa -f ~/.ssh/id_rsa -P '' && \
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
-RUN mkdir -p ~/hdfs/namenode && \
-    mkdir -p ~/hdfs/datanode && \
+RUN mkdir -p ~/home/hdfs/namenode && \
+    mkdir -p ~/home/hdfs/datanode && \
     mkdir $HADOOP_HOME/logs
 
 COPY config/* /tmp/
