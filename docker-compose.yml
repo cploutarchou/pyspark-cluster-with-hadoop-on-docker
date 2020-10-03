@@ -45,6 +45,19 @@ services:
     depends_on:
       - spark-master
 
+  hadoop-master:
+    build: .
+    restart: always
+    container_name: hadoop
+    command: [ "/build/docker/hadoop/start-container.sh" ]
+    volumes:
+      - home:~/home/
+
 volumes:
   shared-workspace:
   logs_dir:
+  home:
+
+networks:
+  hadoop:
+    driver: bridge
