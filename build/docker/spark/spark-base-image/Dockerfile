@@ -18,7 +18,7 @@ CMD /bin/bash
 # -- Layer: Apache Spark
 
 ARG spark_version="3.0.1"
-ARG hadoop_version="3.2"
+ARG hadoop_version="2.7"
 
 RUN apt-get update -y && \
     apt-get install -y curl && \
