@@ -2,74 +2,58 @@ FROM ubuntu:19.10
 
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
-ARG build_date=date+"%Y-%m-%d %T"
+WORKDIR /home
 
-LABEL org.label-schema.build-date=${build_date}
-LABEL org.label-schema.name="Spark Cluster on Docker - Spark Master Image"
-LABEL org.label-schema.description="Spark master image"
-LABEL org.label-schema.url="https://github.com/cploutarchou/pyspark-cluster-with-hadoop-on-docker"
-LABEL org.label-schema.schema-version="1.0"
+RUN apt-get update && apt-get install -y openssh-server  wget curl openjdk-8-jdk gnupg
 
-RUN apt-get update
-
-USER root
-
-# install dev tools
-RUN apt-get update
-RUN apt install -y wget gnupg gnupg1 gnupg2 software-properties-common curl
-RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
-RUN add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
-RUN apt-get update
-RUN apt-get install -y adoptopenjdk-8-hotspot
-RUN apt install -y openssh-server openssh-client
-ENV LANG en_US.utf8
-ENV JAVA_HOME /usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
-
-# hadoop
-RUN curl -s https://downloads.apache.org/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz | tar -xz -C /usr/local/
-RUN cd /usr/local && ln -s ./hadoop-2.10.1 hadoop
-#fix ssh-agent
-RUN mkdir /var/run/sshd
-RUN echo 'root:THEPASSWORDYOUCREATED' | chpasswd
-RUN sed -i 's/#*PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
-
-# SSH login fix. Otherwise user is kicked off after login
-RUN sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
-
-ENV NOTVISIBLE="in users profile"
-RUN echo "export VISIBLE=now" >> /etc/profile
-
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
-
-ENV HADOOP_HOME /usr/local/hadoop
-ENV PATH $PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
-RUN export JAVA_HOME=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64
-RUN export HADOOP_HOME=/usr/local/hadoop
-RUN export HADOOP_INSTALL=$HADOOP_HOME
-RUN export HADOOP_MAPRED_HOME=$HADOOP_HOME
-RUN export HADOOP_COMMON_HOME=$HADOOP_HOME
-RUN export HADOOP_HDFS_HOME=$HADOOP_HOME
-RUN export YARN_HOME=$HADOOP_HOME
-RUN export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
-RUN export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
-RUN export HADOOP_SSH_OPTS="-p"
-RUN export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
-
-ADD /build/docker/hadoop/build.sh /etc/build.sh
-RUN chown root:root /etc/build.sh
-RUN chmod 700 /etc/build.sh
-
-ENV BOOTSTRAP /etc/build.sh
-
-## pseudo distributed
-ADD /build/docker/hadoop/conf/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
-ADD /build/docker/hadoop/conf/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-ADD /build/docker/hadoop/conf/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
-ADD /build/docker/hadoop/conf/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
-
-RUN $HADOOP_HOME/bin/hdfs namenode -format -y
-
-CMD ["/etc/build.sh", "-d"]
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+RUN curl -O https://dist.apache.org/repos/dist/release/hadoop/common/KEYS
+RUN gpg --import KEYS
 
 
+RUN apt-get update && apt-get install openjdk-8-jdk
+
+# install openssh-server, openjdk and wget
+
+ENV HADOOP_VERSION 2.10.1
+
+# install hadoop 2.10.1
+RUN wget https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz && \
+    tar -xzvf hadoop-$HADOOP_VERSION.tar.gz && \
+    mv hadoop-$HADOOP_VERSION /usr/local/hadoop && \
+    rm hadoop-$HADOOP_VERSION.tar.gz
+
+# set environment variable
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV HADOOP_HOME=/usr/local/hadoop
+ENV PATH=$PATH:/usr/local/hadoop/bin:/usr/local/hadoop/sbin
+
+# ssh without key
+RUN ssh-keygen -t rsa -f ~/.ssh/id_rsa -P '' && \
+    cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+RUN mkdir -p ~/home/hdfs/namenode && \
+    mkdir -p ~/home/hdfs/datanode && \
+    mkdir $HADOOP_HOME/logs
+
+COPY config/* /tmp/
+
+RUN mv /tmp/ssh_config ~/.ssh/config && \
+    mv /tmp/hadoop-env.sh /usr/local/hadoop/etc/hadoop/hadoop-env.sh && \
+    mv /tmp/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml && \
+    mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml && \
+    mv /tmp/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml && \
+    mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml && \
+    mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves && \
+    mv /tmp/start-hadoop.sh ~/start-hadoop.sh && \
+    mv /tmp/run-wordcount.sh ~/run-wordcount.sh
+
+RUN chmod +x ~/start-hadoop.sh && \
+    chmod +x ~/run-wordcount.sh && \
+    chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
+    chmod +x $HADOOP_HOME/sbin/start-yarn.sh
+
+# format namenode
+RUN /usr/local/hadoop/bin/hdfs namenode -format
+
+CMD [ "sh", "-c", "service ssh start; bash"]
