@@ -1,46 +1,59 @@
-FROM debian:9
+FROM ubuntu:19.10
 
 LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      openjdk-8-jdk \
-      net-tools \
-      curl \
-      netcat \
-      gnupg \
-      libsnappy-dev \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /home
+
+RUN apt-get update && apt-get install -y openssh-server  wget curl openjdk-8-jdk gnupg
 
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
-
 RUN curl -O https://dist.apache.org/repos/dist/release/hadoop/common/KEYS
-
 RUN gpg --import KEYS
 
-ENV HADOOP_VERSION 3.2.1
-ENV HADOOP_URL https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
 
-RUN set -x \
-    && curl -fSL "$HADOOP_URL" -o /tmp/hadoop.tar.gz \
-    && curl -fSL "$HADOOP_URL.asc" -o /tmp/hadoop.tar.gz.asc \
-    && gpg --verify /tmp/hadoop.tar.gz.asc \
-    && tar -xvf /tmp/hadoop.tar.gz -C /opt/ \
-    && rm /tmp/hadoop.tar.gz*
+RUN apt-get update && apt-get install openjdk-8-jdk
 
-RUN ln -s /opt/hadoop-$HADOOP_VERSION/etc/hadoop /etc/hadoop
+# install openssh-server, openjdk and wget
 
-RUN mkdir /opt/hadoop-$HADOOP_VERSION/logs
+ENV HADOOP_VERSION 2.10.1
 
-RUN mkdir /hadoop-data
+# install hadoop 2.7.2
+RUN wget https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz && \
+    tar -xzvf hadoop-$HADOOP_VERSION.tar.gz && \
+    mv hadoop-$HADOOP_VERSION /usr/local/hadoop && \
+    rm hadoop-$HADOOP_VERSION.tar.gz
 
-ENV HADOOP_HOME=/opt/hadoop-$HADOOP_VERSION
-ENV HADOOP_CONF_DIR=/etc/hadoop
-ENV MULTIHOMED_NETWORK=1
-ENV USER=root
-ENV PATH $HADOOP_HOME/bin/:$PATH
+# set environment variable
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV HADOOP_HOME=/usr/local/hadoop
+ENV PATH=$PATH:/usr/local/hadoop/bin:/usr/local/hadoop/sbin
 
-ADD /build/docker/hadoop/base/entrypoint.sh /entrypoint.sh
+# ssh without key
+RUN ssh-keygen -t rsa -f ~/.ssh/id_rsa -P '' && \
+    cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
-RUN chmod a+x /entrypoint.sh
+RUN mkdir -p ~/hdfs/namenode && \
+    mkdir -p ~/hdfs/datanode && \
+    mkdir $HADOOP_HOME/logs
 
-ENTRYPOINT ["/entrypoint.sh"]
+COPY config/* /tmp/
+
+RUN mv /tmp/ssh_config ~/.ssh/config && \
+    mv /tmp/hadoop-env.sh /usr/local/hadoop/etc/hadoop/hadoop-env.sh && \
+    mv /tmp/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml && \
+    mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml && \
+    mv /tmp/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml && \
+    mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml && \
+    mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves && \
+    mv /tmp/start-hadoop.sh ~/start-hadoop.sh && \
+    mv /tmp/run-wordcount.sh ~/run-wordcount.sh
+
+RUN chmod +x ~/start-hadoop.sh && \
+    chmod +x ~/run-wordcount.sh && \
+    chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
+    chmod +x $HADOOP_HOME/sbin/start-yarn.sh
+
+# format namenode
+RUN /usr/local/hadoop/bin/hdfs namenode -format
+
+CMD [ "sh", "-c", "service ssh start; bash"]
