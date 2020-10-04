@@ -9,6 +9,9 @@ services:
       - 8888:8888
     volumes:
       - shared-workspace:/opt/workspace
+    networks:
+      - hadoop
+
   spark-master:
     image: cploutarchou/spark-base:spark-master-image
     container_name: spark-master
@@ -18,6 +21,8 @@ services:
     volumes:
       - shared-workspace:/opt/workspace
       - logs_dir:/logs/spark-master
+    networks:
+      - hadoop
 
   spark-worker-1:
     image: cploutarchou/spark-base:spark-worker-image
@@ -31,6 +36,8 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
+    networks:
+      - hadoop
 
   spark-worker-2:
     image: cploutarchou/spark-base:spark-worker-image
@@ -44,6 +51,8 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
+    networks:
+      - hadoop
 
   hadoop-master:
     image: cploutarchou/hadoop:latest
@@ -52,16 +61,12 @@ services:
     ports:
       - 50070:50070
       - 8088:8088
-    domainname: hadoop-master
-    hostname: hadoop-master
     networks:
       - hadoop
 
   hadoop-slave-1:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave-1
-    domainname: hadoop-slave-1
-    hostname: hadoop-slave-1
     networks:
       - hadoop
 
@@ -69,17 +74,6 @@ services:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave-2
     restart: always
-    domainname: hadoop-slave-2
-    hostname: hadoop-slave-2
-    networks:
-      - hadoop
-
-  hadoop-slave-3:
-    image: cploutarchou/hadoop:latest
-    container_name: hadoop-slave-3
-    restart: always
-    domainname: hadoop-slave-3
-    hostname: hadoop-slave-3
     networks:
       - hadoop
 
