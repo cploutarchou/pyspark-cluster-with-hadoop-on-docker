@@ -56,7 +56,7 @@ RUN chmod +x ~/start-hadoop.sh && \
 # format namenode
 RUN /usr/local/hadoop/bin/hdfs namenode -format
 
-RUN service ssh start && $HADOOP_HOME/sbin/start-dfs.sh
+CMD ["/build/docker/hadoop/boostrap.sh", "-d"]
 
 # Hdfs ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
