@@ -9,6 +9,9 @@ services:
       - 8888:8888
     volumes:
       - shared-workspace:/opt/workspace
+    networks:
+      - hadoop
+
   spark-master:
     image: cploutarchou/spark-base:spark-master-image
     container_name: spark-master
@@ -18,6 +21,8 @@ services:
     volumes:
       - shared-workspace:/opt/workspace
       - logs_dir:/logs/spark-master
+    networks:
+      - hadoop
 
   spark-worker-1:
     image: cploutarchou/spark-base:spark-worker-image
@@ -31,6 +36,8 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
+    networks:
+      - hadoop
 
   spark-worker-2:
     image: cploutarchou/spark-base:spark-worker-image
@@ -44,19 +51,35 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
+    networks:
+      - hadoop
 
   hadoop-master:
-    build: .
+    image: cploutarchou/hadoop:latest
+    container_name: hadoop-master
     restart: always
-    container_name: hadoop
-    command: [ "/build/docker/hadoop/start-container.sh" ]
-    volumes:
-      - home:~/home/
+    ports:
+      - 50070:50070
+      - 8088:8088
+    networks:
+      - hadoop
+
+  hadoop-slave-1:
+    image: cploutarchou/hadoop:latest
+    container_name: hadoop-slave-1
+    networks:
+      - hadoop
+
+  hadoop-slave-2:
+    image: cploutarchou/hadoop:latest
+    container_name: hadoop-slave-2
+    restart: always
+    networks:
+      - hadoop
 
 volumes:
   shared-workspace:
   logs_dir:
-  home:
 
 networks:
   hadoop:
