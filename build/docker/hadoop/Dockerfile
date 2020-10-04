@@ -51,7 +51,8 @@ RUN mv /tmp/ssh_config ~/.ssh/config && \
 RUN chmod +x ~/start-hadoop.sh && \
     chmod +x ~/run-wordcount.sh && \
     chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
-    chmod +x $HADOOP_HOME/sbin/start-yarn.sh
+    chmod +x $HADOOP_HOME/sbin/start-yarn.sh \
+    chmod +x $HADOOP_HOME/sbin/start-all.sh
 
 
 ADD /build/docker/hadoop/bootstrap.sh /etc/bootstrap.sh
@@ -60,7 +61,6 @@ RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
 
-RUN $HADOOP_HOME/bin/hdfs namenode -format
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
