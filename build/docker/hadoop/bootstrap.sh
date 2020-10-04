@@ -6,7 +6,6 @@
 service ssh start
 # format namenode
 yes | "$HADOOP_HOME"/bin/hdfs namenode -format
-yes | "$HADOOP_HOME"/bin/hdfs dfs datanode -format
 "$HADOOP_HOME"/sbin/start-all.sh
 "$HADOOP_HOME"/sbin/mr-jobhistory-daemon.sh start historyserver
 
