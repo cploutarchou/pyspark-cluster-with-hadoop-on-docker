@@ -66,17 +66,17 @@ services:
     networks:
       - hadoop
 
-  hadoop-slave-1:
+  hadoop-slave1:
     image: cploutarchou/hadoop:latest
-    container_name: hadoop-slave-1
+    container_name: hadoop-slave1
     volumes:
       - home:/home/hdfs/
     networks:
       - hadoop
 
-  hadoop-slave-2:
+  hadoop-slave2:
     image: cploutarchou/hadoop:latest
-    container_name: hadoop-slave-2
+    container_name: hadoop-slave2
     volumes:
       - home:/home/hdfs/
     restart: always
