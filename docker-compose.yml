@@ -46,17 +46,46 @@ services:
       - spark-master
 
   hadoop-master:
-    build: .
+    image: cploutarchou/hadoop-base:hadoop
+    container_name: hadoop-master
     restart: always
-    container_name: hadoop
-    command: [ "/build/docker/hadoop/start-container.sh" ]
-    volumes:
-      - home:~/home/
+    ports:
+      - 50070:50070
+      - 8088:8088
+    domainname: hadoop-master
+    hostname: hadoop-master
+    networks:
+      - hadoop
+
+  hadoop-slave-1:
+    image: cploutarchou/hadoop-base:hadoop
+    container_name: hadoop-slave-1
+    domainname: hadoop-slave-1
+    hostname: hadoop-slave-1
+    networks:
+      - hadoop
+
+  hadoop-slave-2:
+    image: cploutarchou/hadoop-base:hadoop
+    container_name: hadoop-slave-2
+    restart: always
+    domainname: hadoop-slave-2
+    hostname: hadoop-slave-2
+    networks:
+      - hadoop
+
+  hadoop-slave-3:
+    image: cploutarchou/hadoop-base:hadoop
+    container_name: hadoop-slave-3
+    restart: always
+    domainname: hadoop-slave-3
+    hostname: hadoop-slave-3
+    networks:
+      - hadoop
 
 volumes:
   shared-workspace:
   logs_dir:
-  home:
 
 networks:
   hadoop:
