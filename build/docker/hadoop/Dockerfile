@@ -53,8 +53,6 @@ RUN chmod +x ~/start-hadoop.sh && \
     chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
     chmod +x $HADOOP_HOME/sbin/start-yarn.sh
 
-# format namenode
-RUN /usr/local/hadoop/bin/hdfs namenode -format
 
 ADD /build/docker/hadoop/bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh

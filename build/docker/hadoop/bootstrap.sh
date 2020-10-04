@@ -3,9 +3,9 @@
 # shellcheck disable=SC2223
 : ${HADOOP_HOME="/usr/local/hadoop"}
 
-rm /tmp/*.pid
-
 service ssh start
+# format namenode
+"$HADOOP_HOME"/bin/hdfs namenode -format
 "$HADOOP_HOME"/sbin/start-dfs.sh
 "$HADOOP_HOME"/sbin/start-yarn.sh
 "$HADOOP_HOME"/sbin/mr-jobhistory-daemon.sh start historyserver
