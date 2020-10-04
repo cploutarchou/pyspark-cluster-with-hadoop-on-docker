@@ -58,6 +58,8 @@ services:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-master
     restart: always
+    volumes:
+      - home:/home/hdfs/
     ports:
       - 50070:50070
       - 8088:8088
@@ -67,12 +69,16 @@ services:
   hadoop-slave-1:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave-1
+    volumes:
+      - home:/home/hdfs/
     networks:
       - hadoop
 
   hadoop-slave-2:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave-2
+    volumes:
+      - home:/home/hdfs/
     restart: always
     networks:
       - hadoop
@@ -80,6 +86,7 @@ services:
 volumes:
   shared-workspace:
   logs_dir:
+  home:
 
 networks:
   hadoop:
