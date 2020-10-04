@@ -46,7 +46,7 @@ services:
       - spark-master
 
   hadoop-master:
-    image: cploutarchou/hadoop-base:hadoop
+    image: cploutarchou/hadoop:latest
     container_name: hadoop-master
     restart: always
     ports:
@@ -58,7 +58,7 @@ services:
       - hadoop
 
   hadoop-slave-1:
-    image: cploutarchou/hadoop-base:hadoop
+    image: cploutarchou/hadoop:latest
     container_name: hadoop-slave-1
     domainname: hadoop-slave-1
     hostname: hadoop-slave-1
@@ -66,7 +66,7 @@ services:
       - hadoop
 
   hadoop-slave-2:
-    image: cploutarchou/hadoop-base:hadoop
+    image: cploutarchou/hadoop:latest
     container_name: hadoop-slave-2
     restart: always
     domainname: hadoop-slave-2
@@ -75,7 +75,7 @@ services:
       - hadoop
 
   hadoop-slave-3:
-    image: cploutarchou/hadoop-base:hadoop
+    image: cploutarchou/hadoop:latest
     container_name: hadoop-slave-3
     restart: always
     domainname: hadoop-slave-3
