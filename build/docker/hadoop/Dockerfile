@@ -60,6 +60,7 @@ RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
 
+RUN $HADOOP_HOME/bin/hdfs namenode -format
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
@@ -70,4 +71,4 @@ EXPOSE 10020 19888
 #Yarn ports
 EXPOSE 8030 8031 8032 8033 8040 8042 8088
 #Other ports
-EXPOSE 49707 2122
+EXPOSE 49707 22
