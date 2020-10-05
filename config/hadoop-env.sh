@@ -41,6 +41,8 @@ for f in $HADOOP_HOME/contrib/capacity-scheduler/*.jar; do
   fi
 done
 
+export HADOOP_OS_TYPE=${HADOOP_OS_TYPE:-$(uname -s)}
+
 # The maximum amount of heap to use, in MB. Default is 1000.
 #export HADOOP_HEAPSIZE=
 #export HADOOP_NAMENODE_INIT_HEAPSIZE=""

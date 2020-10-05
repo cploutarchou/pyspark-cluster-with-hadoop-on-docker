@@ -89,7 +89,13 @@ services:
   hadoop-slave2:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave2
-    volumes:
+    restart: always
+    networks:
+      - hadoop
+
+  hadoop-slave3:
+    image: cploutarchou/hadoop:latest
+    container_name: hadoop-slave3
     restart: always
     networks:
       - hadoop

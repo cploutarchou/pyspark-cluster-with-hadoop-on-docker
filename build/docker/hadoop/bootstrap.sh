@@ -6,8 +6,8 @@
 service ssh start
 # format namenode
 yes | "$HADOOP_HOME"/bin/hdfs namenode -format
-"$HADOOP_HOME"/sbin/start-dfs.sh
-"$HADOOP_HOME"/sbin/start-yarn.sh
+yes | "$HADOOP_HOME"/bin/hdfs dfs -mkdir -p /user/root
+"$HADOOP_HOME"/sbin/start-all.sh
 "$HADOOP_HOME"/sbin/mr-jobhistory-daemon.sh start historyserver
 
 if [[ $1 == "-d" ]]; then
