@@ -4,6 +4,8 @@ LABEL maintainer="Christos Ploutarchou<cploutarchou@gmail.com>"
 
 WORKDIR /home
 
+USER root
+
 RUN apt-get update && apt-get install -y openssh-server  wget curl openjdk-8-jdk gnupg
 
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
@@ -44,14 +46,12 @@ RUN mv /tmp/ssh_config ~/.ssh/config && \
     mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml && \
     mv /tmp/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml && \
     mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml && \
-    mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves && \
-    mv /tmp/start-hadoop.sh ~/start-hadoop.sh && \
-    mv /tmp/run-wordcount.sh ~/run-wordcount.sh
+    mv /tmp/httpfs-site.xml $HADOOP_HOME/etc/hadoop/httpfs-site.xml && \
+    mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves
 
-RUN chmod +x ~/start-hadoop.sh && \
-    chmod +x ~/run-wordcount.sh && \
-    chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
-    chmod +x $HADOOP_HOME/sbin/start-yarn.sh
+#RUN chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
+#    chmod +x $HADOOP_HOME/sbin/start-yarn.sh && \
+RUN  chmod +x $HADOOP_HOME/sbin/start-all.sh
 
 
 ADD /build/docker/hadoop/bootstrap.sh /etc/bootstrap.sh
@@ -60,7 +60,6 @@ RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
 
-RUN $HADOOP_HOME/bin/hdfs namenode -format
 
 CMD ["/etc/bootstrap.sh", "-d"]
 

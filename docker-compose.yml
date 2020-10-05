@@ -59,20 +59,43 @@ services:
     container_name: hadoop-master
     restart: always
     ports:
+      - 50010:50010
+      - 50020:50020
       - 50070:50070
+      - 50075:50075
+      - 50090:50090
+      - 8020:8020
+      - 9000:9000
+      - 10020:10020
+      - 19888:19888
+      - 8030:8030
+      - 8031:8031
+      - 8032:8032
+      - 8033:8033
+      - 8040:8040
+      - 8042:8042
       - 8088:8088
+      - 49707:49707
+      - 22:22
     networks:
       - hadoop
 
-  hadoop-slave-1:
+  hadoop-slave1:
     image: cploutarchou/hadoop:latest
-    container_name: hadoop-slave-1
+    container_name: hadoop-slave1
     networks:
       - hadoop
 
-  hadoop-slave-2:
+  hadoop-slave2:
     image: cploutarchou/hadoop:latest
-    container_name: hadoop-slave-2
+    container_name: hadoop-slave2
+    restart: always
+    networks:
+      - hadoop
+
+  hadoop-slave3:
+    image: cploutarchou/hadoop:latest
+    container_name: hadoop-slave3
     restart: always
     networks:
       - hadoop
@@ -80,7 +103,9 @@ services:
 volumes:
   shared-workspace:
   logs_dir:
+  home:
 
 networks:
   hadoop:
     driver: bridge
+
