@@ -9,8 +9,6 @@ services:
       - 8888:8888
     volumes:
       - shared-workspace:/opt/workspace
-    networks:
-      - hadoop
 
   spark-master:
     image: cploutarchou/spark-base:spark-master-image
@@ -21,8 +19,7 @@ services:
     volumes:
       - shared-workspace:/opt/workspace
       - logs_dir:/logs/spark-master
-    networks:
-      - hadoop
+
 
   spark-worker-1:
     image: cploutarchou/spark-base:spark-worker-image
@@ -36,8 +33,7 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
-    networks:
-      - hadoop
+
 
   spark-worker-2:
     image: cploutarchou/spark-base:spark-worker-image
@@ -51,8 +47,7 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
-    networks:
-      - hadoop
+
 
   hadoop-master:
     image: cploutarchou/hadoop:latest
@@ -77,35 +72,21 @@ services:
       - 8088:8088
       - 49707:49707
       - 22:22
-    networks:
-      - hadoop
 
   hadoop-slave1:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave1
-    networks:
-      - hadoop
+
 
   hadoop-slave2:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave2
     restart: always
-    networks:
-      - hadoop
 
-  hadoop-slave3:
-    image: cploutarchou/hadoop:latest
-    container_name: hadoop-slave3
-    restart: always
-    networks:
-      - hadoop
 
 volumes:
   shared-workspace:
   logs_dir:
   home:
 
-networks:
-  hadoop:
-    driver: bridge
 
