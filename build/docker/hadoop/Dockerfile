@@ -49,9 +49,8 @@ RUN mv /tmp/ssh_config ~/.ssh/config && \
     mv /tmp/httpfs-site.xml $HADOOP_HOME/etc/hadoop/httpfs-site.xml && \
     mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves
 
-#RUN chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
-#    chmod +x $HADOOP_HOME/sbin/start-yarn.sh && \
-RUN  chmod +x $HADOOP_HOME/sbin/start-all.sh
+RUN chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
+    chmod +x $HADOOP_HOME/sbin/start-yarn.sh
 
 
 ADD /build/docker/hadoop/bootstrap.sh /etc/bootstrap.sh
