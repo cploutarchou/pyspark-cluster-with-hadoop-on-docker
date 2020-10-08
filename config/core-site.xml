@@ -20,8 +20,4 @@
         <name>fs.defaultFS</name>
         <value>hdfs://hadoop-master:9000</value>
     </property>
-    <property>
-        <name>hadoop.tmp.dir</name>
-        <value>file:///home/hdfs/hadoop_tmp</value>
-    </property>
 </configuration>
