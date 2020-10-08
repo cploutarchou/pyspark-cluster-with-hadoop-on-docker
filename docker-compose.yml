@@ -52,7 +52,7 @@ services:
   hadoop:
     image: cploutarchou/hadoop:latest
     container_name: hadoop
-    hostname: hadoop
+    hostname: localhost
     restart: always
     ports:
       - 50010:50010
@@ -73,7 +73,19 @@ services:
       - 8088:8088
       - 49707:49707
       - 22:22
+  hadoop-slave1:
+    image: cploutarchou/hadoop:latest
+    container_name: hadoop-slave1
+    networks:
+      - hadoop
 
+  hadoop-slave2:
+    image: cploutarchou/hadoop:latest
+    container_name: hadoop-slave2
+    volumes:
+    restart: always
+    networks:
+      - hadoop
 
 volumes:
   shared-workspace:
