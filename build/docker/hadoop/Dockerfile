@@ -12,6 +12,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 RUN curl -O https://dist.apache.org/repos/dist/release/hadoop/common/KEYS
 RUN gpg --import KEYS
 
+RUN echo $(grep $(hostname) /etc/hosts | cut -f1) hadoop-master >> /etc/hosts
 
 RUN apt-get update && apt-get install openjdk-8-jdk
 
@@ -41,16 +42,14 @@ RUN mkdir -p ~/home/hdfs/namenode && \
 COPY config/* /tmp/
 
 RUN mv /tmp/ssh_config ~/.ssh/config && \
-    mv /tmp/hadoop-env.sh /usr/local/hadoop/etc/hadoop/hadoop-env.sh && \
+    mv /tmp/hadoop-env.sh $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
     mv /tmp/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml && \
     mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml && \
     mv /tmp/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml && \
-    mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml && \
-    mv /tmp/httpfs-site.xml $HADOOP_HOME/etc/hadoop/httpfs-site.xml && \
-    mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves
+    mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves && \
+    mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
-RUN chmod +x $HADOOP_HOME/sbin/start-dfs.sh && \
-    chmod +x $HADOOP_HOME/sbin/start-yarn.sh
+RUN chmod +x $HADOOP_HOME/sbin/start-dfs.sh && chmod +x $HADOOP_HOME/sbin/start-yarn.sh
 
 
 ADD /build/docker/hadoop/bootstrap.sh /etc/bootstrap.sh
@@ -58,7 +57,6 @@ RUN chown root:root /etc/bootstrap.sh
 RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
-
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
