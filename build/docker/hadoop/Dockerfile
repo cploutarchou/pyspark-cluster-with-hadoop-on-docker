@@ -46,8 +46,7 @@ RUN mv /tmp/ssh_config ~/.ssh/config && \
     mv /tmp/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml && \
     mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml && \
     mv /tmp/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml && \
-    mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml && \
-    mv /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves
+    mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
 RUN chmod +x $HADOOP_HOME/sbin/start-dfs.sh && chmod +x $HADOOP_HOME/sbin/start-yarn.sh
 
