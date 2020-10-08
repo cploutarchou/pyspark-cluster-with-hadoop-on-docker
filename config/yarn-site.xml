@@ -27,7 +27,7 @@
     </property>
     <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>0.0.0.0</value>
+        <value>hadoop-master</value>
     </property>
     <property>
         <name>yarn.nodemanager.resource.memory-mb</name>

@@ -52,6 +52,7 @@ services:
   hadoop-master:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-master
+    hostname: hadoop-master
     restart: always
     ports:
       - 50010:50010
@@ -76,11 +77,14 @@ services:
   hadoop-slave1:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave1
+    hostname: hadoop-master
+    restart: always
 
 
   hadoop-slave2:
     image: cploutarchou/hadoop:latest
     container_name: hadoop-slave2
+    hostname: hadoop-master
     restart: always
 
 
