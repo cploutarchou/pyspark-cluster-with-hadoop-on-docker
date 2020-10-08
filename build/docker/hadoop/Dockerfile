@@ -12,7 +12,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 RUN curl -O https://dist.apache.org/repos/dist/release/hadoop/common/KEYS
 RUN gpg --import KEYS
 
-RUN echo $(grep $(hostname) /etc/hosts | cut -f1) hadoop-master >> /etc/hosts && install-software
+RUN echo $(grep $(hostname) /etc/hosts | cut -f1) hadoop-master >> /etc/hosts
 
 RUN apt-get update && apt-get install openjdk-8-jdk
 
